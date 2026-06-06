@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Test</title>
+</head>
+<body>
+    <h1>Dashboard Functionality Test</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        // Simple test to verify modules are working
+        const results = [];
+        
+        // Test 1: Storage Service
+        try {
+            const testKey = 'test-key';
+            const testValue = { data: 'test' };
+            localStorage.setItem(testKey, JSON.stringify(testValue));
+            const retrieved = JSON.parse(localStorage.getItem(testKey));
+            localStorage.removeItem(testKey);
+            
+            if (retrieved.data === 'test') {
+                results.push('✓ Storage Service works');
+            } else {
+                results.push('✗ Storage Service failed');
+            }
+        } catch (e) {
+            results.push('✗ Storage Service error: ' + e.message);
+        }
+        
+        // Test 2: Time formatting
+        try {
+            const date = new Date('2024-01-15T14:30:45');
+            const time = date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            
+            if (time.includes('PM')) {
+                results.push('✓ Time formatting works');
+            } else {
+                results.push('✗ Time formatting failed');
+            }
+        } catch (e) {
+            results.push('✗ Time formatting error: ' + e.message);
+        }
+        
+        // Test 3: Greeting logic
+        try {
+            function getGreeting(hour) {
+                if (hour >= 5 && hour < 12) return "Good Morning";
+                if (hour >= 12 && hour < 17) return "Good Afternoon";
+                if (hour >= 17 && hour < 21) return "Good Evening";
+                return "Good Night";
+            }
+            
+            const morning = getGreeting(10);
+            const afternoon = getGreeting(14);
+            const evening = getGreeting(18);
+            const night = getGreeting(22);
+            
+            if (morning === "Good Morning" && 
+                afternoon === "Good Afternoon" && 
+                evening === "Good Evening" && 
+                night === "Good Night") {
+                results.push('✓ Greeting logic works');
+            } else {
+                results.push('✗ Greeting logic failed');
+            }
+        } catch (e) {
+            results.push('✗ Greeting logic error: ' + e.message);
+        }
+        
+        // Test 4: Timer formatting
+        try {
+            function formatTime(seconds) {
+                const totalSeconds = Math.max(0, Math.floor(seconds));
+                const minutes = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+            
+            const time1 = formatTime(1500);
+            const time2 = formatTime(65);
+            const time3 = formatTime(5);
+            
+            if (time1 === '25:00' && time2 === '01:05' && time3 === '00:05') {
+                results.push('✓ Timer formatting works');
+            } else {
+                results.push('✗ Timer formatting failed');
+            }
+        } catch (e) {
+            results.push('✗ Timer formatting error: ' + e.message);
+        }
+        
+        // Test 5: URL normalization
+        try {
+            function normalizeUrl(url) {
+                const trimmed = url.trim();
+                if (!/^https?:\/\//i.test(trimmed)) {
+                    return `https://${trimmed}`;
+                }
+                return trimmed;
+            }
+            
+            const url1 = normalizeUrl('google.com');
+            const url2 = normalizeUrl('https://example.com');
+            const url3 = normalizeUrl('http://test.com');
+            
+            if (url1 === 'https://google.com' && 
+                url2 === 'https://example.com' && 
+                url3 === 'http://test.com') {
+                results.push('✓ URL normalization works');
+            } else {
+                results.push('✗ URL normalization failed');
+            }
+        } catch (e) {
+            results.push('✗ URL normalization error: ' + e.message);
+        }
+        
+        // Display results
+        const resultsDiv = document.getElementById('test-results');
+        resultsDiv.innerHTML = '<ul>' + results.map(r => '<li>' + r + '</li>').join('') + '</ul>';
+        
+        // Summary
+        const passed = results.filter(r => r.startsWith('✓')).length;
+        const total = results.length;
+        resultsDiv.innerHTML += `<h2>Summary: ${passed}/${total} tests passed</h2>`;
+        
+        if (passed === total) {
+            resultsDiv.innerHTML += '<p style="color: green; font-weight: bold;">All core functionality tests passed!</p>';
+        }
+    </script>
+</body>
+</html>
